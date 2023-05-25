@@ -2,7 +2,6 @@ package ro.pub.cs.systems.eim.practicaltest02;
 
 import android.util.Log;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,8 +9,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 
 import cz.msebera.android.httpclient.HttpEntity;
@@ -60,7 +57,7 @@ public class CommunicationThread extends Thread {
             HashMap<String, BitcoinInformation> data = serverThread.getData();
             BitcoinInformation bitcoinInformation;
 
-            if (data.containsKey(coin)) {
+            if (data.containsKey(coin) && (System.currentTimeMillis() - data.get(coin).getTimeStamp() < 1000)) {
                 Log.i(Constants.TAG, "[COMMUNICATION THREAD] Getting the information from the cache...");
                 bitcoinInformation = data.get(coin);
             } else {
@@ -88,7 +85,7 @@ public class CommunicationThread extends Thread {
 
 
                 // Create a WeatherForecastInformation object with the information extracted from the JSONObject
-                bitcoinInformation = new BitcoinInformation(updated, usdRate, eurRate);
+                bitcoinInformation = new BitcoinInformation(updated, usdRate, eurRate, System.currentTimeMillis());
 
                 // Cache the information for the given city
                 serverThread.setData(coin, bitcoinInformation);
@@ -106,10 +103,10 @@ public class CommunicationThread extends Thread {
                     result = bitcoinInformation.toString();
                     break;
                 case Constants.USD:
-                    result = bitcoinInformation.getUsdRate();
+                    result = bitcoinInformation.getUsdRate() + " updated: " + bitcoinInformation.getUpdated();
                     break;
                 case Constants.EUR:
-                    result = bitcoinInformation.getEurRate();
+                    result = bitcoinInformation.getEurRate() + " updated: " + bitcoinInformation.getUpdated();
                     break;
                 default:
                     result = "[COMMUNICATION THREAD] Wrong information type";

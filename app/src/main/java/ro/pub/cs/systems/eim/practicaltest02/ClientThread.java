@@ -40,14 +40,14 @@ public class ClientThread extends Thread {
             // sends the city and information type to the server
             printWriter.println(coin);
             printWriter.flush();
-            String bitcointInformation;
+            String bitcoinInformation;
 
             // reads the weather information from the server
-            while ((bitcointInformation = bufferedReader.readLine()) != null) {
-                final String finalizedWeateherInformation = bitcointInformation;
+            while ((bitcoinInformation = bufferedReader.readLine()) != null) {
+                final String finalInfo = bitcoinInformation;
 
                 // updates the UI with the weather information. This is done using postt() method to ensure it is executed on UI thread
-                bitcoinTextView.post(() -> bitcoinTextView.setText(finalizedWeateherInformation));
+                bitcoinTextView.post(() -> bitcoinTextView.setText(finalInfo));
             }
         } // if an exception occurs, it is logged
         catch (IOException ioException) {
